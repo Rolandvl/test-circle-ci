@@ -31,12 +31,10 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello:
-          requires: 
-            - waitforok
+      - say-hello
       - waitforok:
           type: approval
       - say-bye:
           requires:
-            - say-hello
+            - waitforok
           
