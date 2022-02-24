@@ -37,6 +37,5 @@ workflows:
             - say-hello
           filters:
             branches:
-              only: 
+              only:
                 - main
-          
