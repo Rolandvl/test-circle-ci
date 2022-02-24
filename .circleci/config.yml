@@ -30,12 +30,14 @@ jobs:
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   say-hello-workflow:
+    triggers:
+      - schedule:
+          filters:
+            branches:
+              only:
+                - main
     jobs:
       - say-hello
       - say-bye:
           requires:
             - say-hello
-          filters:
-            branches:
-              only:
-                - main
