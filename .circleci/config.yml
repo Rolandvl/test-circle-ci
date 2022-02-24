@@ -31,11 +31,11 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
-      - say-bye:
-          requires:
-            - say-hello
+      - say-hello:
           filters:
             branches:
               only:
                 - main
+      - say-bye:
+          requires:
+            - say-hello
