@@ -31,7 +31,10 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
+      - say-hello:
+          filter:
+          branch: master
+
       - waitforok:
           type: approval
       - say-bye:
