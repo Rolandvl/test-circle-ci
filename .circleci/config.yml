@@ -36,5 +36,6 @@ workflows:
           type: approval
       - say-bye:
           requires:
+            - say-hello
             - waitforok
           
