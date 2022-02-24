@@ -32,10 +32,12 @@ workflows:
   say-hello-workflow:
     jobs:
       - say-hello
-      - waitforok:
-          type: approval
       - say-bye:
           requires:
             - say-hello
-            - waitforok
+          filters:
+            branches:
+              only:
+                - main
+
           
