@@ -39,5 +39,3 @@ workflows:
             branches:
               only:
                 - main
-
-          
