@@ -18,8 +18,9 @@ jobs:
     steps:
       - checkout    
       - run:
-          name: job  to do
+          name: job 
           command: echo "deploy <<parameters.instance>>  on  <<parameters.pod>>"
+
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -35,18 +36,22 @@ parameters:
 
 workflows:
   workflows_std:
-    when: equal [ "A", << pipeline.parameters.game >> ]
+    when:
+      and:
+        - << pipeline.parameters.try_deploy >>
+        - equal: [ "A", << pipeline.parameters.game >> ]
     jobs:
       - say-something:
           instance: << pipeline.parameters.game >>
           pod: "standard"
 
   workflows_cluster:
-    when: << pipeline.parameters.try_deploy >>
+    when:
+      and:
+        - << pipeline.parameters.try_deploy >>
+        - equal: [ "C", << pipeline.parameters.game >> ]
     jobs:
       - say-something:
           instance: << pipeline.parameters.game >>
           pod: "cluster"
-
-
 
