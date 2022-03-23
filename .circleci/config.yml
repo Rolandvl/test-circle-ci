@@ -2,40 +2,60 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: Say hello
-          command: echo "Hello, World!"
+  say-something:
+    parameters:
+      - instance:
+        type: enum
+        enum: ["A", "B", "C"]
+        default: "A"
+      - pod:
+        type: enum
+        enum: ["standard", "cluster"]
+        default: "standard"
+    - run:
+        name: job 
+        command: echo "deploy <<parameters.instance>>  on  <<parameters.pod>>"
   
-  say-bye:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - run:
-          name: say bye
-          command: echo  "bye"
+
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-workflows:
-  say-hello-workflow:
+
+parameters:
+  try_deploy:
+    type: boolean
+    default: false
+  game:
+    type: enum 
+    enum : ["A", "B", "C"]
+    default: "A"
+
+
+workflows_std:
+  when:
+    - and:
+      - << pipeline.parameters.try_deploy >>
+      - or:
+            - equal: [ "A", << pipeline.game >> ]
+            - equal: [ "B", << pipeline.game >> ]
+  say-workflow:
     jobs:
-      - say-hello:
-          filters:
-            branches:
-              only:
-                - main
-      - say-bye:
-          requires:
-            - say-hello
+      - say-something:
+        instance: << pipeline.game >>
+        pod: "standard"
+
+workflows_cluster:
+  when:
+    - and:
+      - << pipeline.parameters.try_deploy >>
+      - or:
+            - equal: [ "C", << pipeline.game >> ]
+  say-workflow:
+    jobs:
+      - say-something:
+        instance: << pipeline.game >>
+        pod: "cluster"
+
+
+
