@@ -6,56 +6,25 @@ jobs:
   say-something:
     parameters:
       - instance:
-        type: enum
-        enum: ["A", "B", "C"]
+        type: string
         default: "A"
       - pod:
-        type: enum
-        enum: ["standard", "cluster"]
+        type: string
         default: "standard"
-    - run:
-        name: job 
-        command: echo "deploy <<parameters.instance>>  on  <<parameters.pod>>"
-  
-
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: job to do 
+          command: echo "deploy <<parameters.instance>>  on  <<parameters.pod>>"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 
-parameters:
-  try_deploy:
-    type: boolean
-    default: false
-  game:
-    type: enum 
-    enum : ["A", "B", "C"]
-    default: "A"
-
-
-workflows_std:
-  when:
-    - and:
-      - << pipeline.parameters.try_deploy >>
-      - or:
-            - equal: [ "A", << pipeline.game >> ]
-            - equal: [ "B", << pipeline.game >> ]
-  say-workflow:
+workflows:
+  workflows_std:
     jobs:
       - say-something:
-        instance: << pipeline.game >>
-        pod: "standard"
-
-workflows_cluster:
-  when:
-    - and:
-      - << pipeline.parameters.try_deploy >>
-      - or:
-            - equal: [ "C", << pipeline.game >> ]
-  say-workflow:
-    jobs:
-      - say-something:
-        instance: << pipeline.game >>
-        pod: "cluster"
-
-
-
+          instance: "A"
+          pod : "standard"
